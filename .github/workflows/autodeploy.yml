@@ -48,7 +48,9 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            docker stop react || true
-            docker rm react || true
+            echo "${{ secrets.DOCKER_KEY }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+            docker stop react-test || true
+            docker rm -f react-test || true
             docker rmi ${{ secrets.DOCKER_USER }}/react-test:mixed || true
-            docker run -d -p 80:80 --name react ${{ secrets.DOCKER_USER }}/react-test:mixed
+            docker pull ${{ secrets.DOCKER_USER }}/react-test:mixed
+            docker run -d -p 80:80 --name react-test ${{ secrets.DOCKER_USER }}/react-test:mixed
